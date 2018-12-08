@@ -48,9 +48,10 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 	let $selectorContainer = $('<div>', { id: 'dialogContainerId', class: 'data-ispraviMe-suspiciousContainer' });
 	let $previousErrorButton = $('<input>', { type: 'button', value: '<' });
 	$previousErrorButton.click(function() {
-		var nextError = GetNextErrorByIncrement(error, errors, -1);
+		let nextError = GetNextErrorByIncrement(error, errors, -1);
 		if (nextError != null) {
-			ShowError(nextError, $selectorContainer, $suspiciousItem);
+			error = nextError;
+			ShowError(error, $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($previousErrorButton);
@@ -60,7 +61,8 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 	$nextErrorButton.click(function() {
 		var nextError = GetNextErrorByIncrement(error, errors, 1);
 		if (nextError != null) {
-			ShowError(nextError, $selectorContainer, $suspiciousItem);
+			error = nextError;
+			ShowError(error, $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($nextErrorButton);
@@ -77,21 +79,25 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 				text: 'Zamjeni',
 				click: function() {
 					let selectedValue = $('input[type="text"].ispraviMe-errorValue').val();
+					let newErrors = [];
 					if (selectedValue) {
-						valueSelectedCallback(selectedValue, error.index);
+						newErrors = valueSelectedCallback(selectedValue, error.index);
 					}
 
 					let nextError = GetNextErrorByIncrement(error, errors, 1);
 					if (nextError != null) {
-						ShowError(nextError, $selectorContainer, $suspiciousItem);
+						error = nextError;
+						ShowError(error, $selectorContainer, $suspiciousItem);
 					} else {
 						nextError = GetNextErrorByIncrement(error, errors, -1);
 						if (nextError != null) {
-							ShowError(nextError, $selectorContainer, $suspiciousItem);
+							error = nextError;
+							ShowError(error, $selectorContainer, $suspiciousItem);
 						} else {
 							$(this).dialog('close');
 						}
 					}
+					errors = newErrors;
 				}
 			}
 		]

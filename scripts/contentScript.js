@@ -2,24 +2,30 @@ var ispraviMeDataAttribute = 'ispravi-me-id';
 
 var ispraviMeResponses = [];
 
-$('body').on('click', '.ispravi-me-highlight', function(){
-    var _index = $(this).data('index');
-    var _ispraviMeId = $(this).data('ispravi-me-id');
-    var errors = $.grep(ispraviMeResponses, function(item){ 
-        return item.id == _ispraviMeId; 
-    });
-    ShowErrorModal(errors[0].errors, function(selectedValue, index){
-        $("[data-index='" + index + "']").text(selectedValue);
-        $("[data-index='" + index + "']").removeClass("ispravi-me-highlight");
-
-        $.grep(ispraviMeResponses, function(item){ 
-            if (item.id == _ispraviMeId){
-                item.errors = $.grep(item.errors, function(error){ 
-                    return error.index != index; 
-                });
-            } 
-        });
-    }, _index);
+$('body').on('click', '.ispravi-me-highlight', function() {
+	var _index = $(this).data('index');
+	var _ispraviMeId = $(this).data('ispravi-me-id');
+	var errors = $.grep(ispraviMeResponses, function(item) {
+		return item.id == _ispraviMeId;
+	});
+	ShowErrorModal(
+		errors[0].errors,
+		function(selectedValue, index) {
+			$("[data-index='" + index + "']").text(selectedValue);
+			$("[data-index='" + index + "']").removeClass('ispravi-me-highlight');
+			let errors;
+			$.grep(ispraviMeResponses, function(item) {
+				if (item.id == _ispraviMeId) {
+					item.errors = $.grep(item.errors, function(error) {
+						return error.index != index;
+					});
+					errors = item.errors;
+				}
+			});
+			return errors;
+		},
+		_index
+	);
 });
 
 function provjeri($clickedButton) {
@@ -32,32 +38,39 @@ function provjeri($clickedButton) {
 		return;
 	}
 
-    $clickedButton.LoadingOverlay("show", {imageColor: "#0061A6"});
-    $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(data){   
-        $clickedButton.LoadingOverlay("hide", {imageColor: "#0061A6"});
-        if (!data.response){            
-            $container.effect('highlight', {color: 'green'}, 1000);
-        } else{
-            var _errors = $.map(data.response.error, function(item, _index){
-                return { index: _index, position: item.position[0], length: item.length, suspicious: item.suspicious, suggestions: item.suggestions };
-            });
-        
-            _errors.sort(function(a, b){return a.position - b.position});
+	$clickedButton.LoadingOverlay('show', { imageColor: '#0061A6' });
+	$.get('http://omega.ispravi.me/api/ispravi.pl?textarea=' + text + '&context=on', function(data) {
+		$clickedButton.LoadingOverlay('hide', { imageColor: '#0061A6' });
+		if (!data.response) {
+			$container.effect('highlight', { color: 'green' }, 1000);
+		} else {
+			var _errors = $.map(data.response.error, function(item, _index) {
+				return {
+					index: _index,
+					position: item.position[0],
+					length: item.length,
+					suspicious: item.suspicious,
+					suggestions: item.suggestions
+				};
+			});
 
-            var existingResponse = $.grep(ispraviMeResponses, function(item){ 
-                return item.id == ispraviMeId; 
-            });
+			_errors.sort(function(a, b) {
+				return a.position - b.position;
+			});
 
-            if (existingResponse.length > 0) {
-                existingResponse[0].errors = _errors
-            } else {
-                ispraviMeResponses.push({id: ispraviMeId, errors: _errors});
-            }
+			var existingResponse = $.grep(ispraviMeResponses, function(item) {
+				return item.id == ispraviMeId;
+			});
 
-            
-            Highlight($container, _errors, ispraviMeId);
-        }
-    });
+			if (existingResponse.length > 0) {
+				existingResponse[0].errors = _errors;
+			} else {
+				ispraviMeResponses.push({ id: ispraviMeId, errors: _errors });
+			}
+
+			Highlight($container, _errors, ispraviMeId);
+		}
+	});
 }
 
 var createButton = function(ispraviMeId) {
