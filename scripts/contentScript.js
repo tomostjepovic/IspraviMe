@@ -1,13 +1,22 @@
 
 var ispraviMeDataAttribute = 'ispravi-me-id';
 
-var ispraviMeFakeResponse;
+var ispraviMeResponses = [];
 
 $('body').on('click', '.ispravi-me-highlight', function(){
+    debugger;
     var _index = $(this).data('index');
-    ShowErrorModal(ispraviMeFakeResponse, function(selectedValue, index){
+    var _ispraviMeId = $(this).data('ispravi-me-id');
+    var errors = $.grep(ispraviMeResponses, function(item){ 
+        return item.id == _ispraviMeId; 
+    });
+    ShowErrorModal(errors[0], function(selectedValue, index){
         $("[data-index='" + index + "']").text(selectedValue);
         $("[data-index='" + index + "']").removeClass("ispravi-me-highlight");
+
+        errors = $.grep(errors[_ispraviMeId], function(item){ 
+            return item.index != index; 
+       });
     }, _index);
 });
 
@@ -27,14 +36,15 @@ function provjeri($clickedButton){
         if (!data.response){            
             $container.effect('highlight', {color: 'green'}, 1000);
         } else{
-            var errors = $.map(data.response.error, function(item, _index){
+            var _errors = $.map(data.response.error, function(item, _index){
                 return { index: _index, position: item.position[0], length: item.length, suspicious: item.suspicious, suggestions: item.suggestions };
             });
         
-            errors.sort(function(a, b){return a.position - b.position});
+            _errors.sort(function(a, b){return a.position - b.position});
+
+            ispraviMeResponses.push({id: ispraviMeId, errors: _errors});
             
-            ispraviMeFakeResponse = errors;
-            Highlight($container, errors);
+            Highlight($container, _errors, ispraviMeId);
         }
     });
 }
