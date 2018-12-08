@@ -24,16 +24,22 @@ function provjeri($clickedButton) {
 		return;
 	}
 
-	$clickedButton.LoadingOverlay('show', { imageColor: '#0061A6' });
-	$.get('http://omega.ispravi.me/api/ispravi.pl?textarea=' + text + '&context=on', function(data) {
-		ispraviMeFakeResponse = data;
-		$clickedButton.LoadingOverlay('hide', { imageColor: '#0061A6' });
-		if (!data.response) {
-			$container.effect('highlight', { color: 'green' }, 1000);
-		} else {
-			Highlight($container, data);
-		}
-	});
+    $clickedButton.LoadingOverlay("show", {imageColor: "#0061A6"});
+    $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(data){   
+        $clickedButton.LoadingOverlay("hide", {imageColor: "#0061A6"});
+        if (!data.response){            
+            $container.effect('highlight', {color: 'green'}, 1000);
+        } else{
+            var errors = $.map(data.response.error, function(item, _index){
+                return { index: _index, position: item.position[0], length: item.length, suspicious: item.suspicious, suggestions: item.suggestions };
+            });
+        
+            errors.sort(function(a, b){return a.position - b.position});
+            
+            ispraviMeFakeResponse = errors;
+            Highlight($container, errors);
+        }
+    });
 }
 
 var createButton = function(ispraviMeId) {
