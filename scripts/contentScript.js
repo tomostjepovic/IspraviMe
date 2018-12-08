@@ -9,7 +9,7 @@ $('body').on('click', '.ispravi-me-highlight', function(){
     var errors = $.grep(ispraviMeResponses, function(item){ 
         return item.id == _ispraviMeId; 
     });
-    ShowErrorModal(errors[0], function(selectedValue, index){
+    ShowErrorModal(errors[0].errors, function(selectedValue, index){
         $("[data-index='" + index + "']").text(selectedValue);
         $("[data-index='" + index + "']").removeClass("ispravi-me-highlight");
 
