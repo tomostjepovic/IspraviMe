@@ -13,12 +13,16 @@ function Highlight($container, ispraviMeResponse){
         if (currIndex != error.position){
             textArray.push(text.slice(currIndex, error.position));
         }
-        textArray.push(format(text.slice(error.position, error.position + error.length)));
+        textArray.push(format(text.slice(error.position, error.position + error.length), error.index));
         currIndex = currIndex + error.position + error.length;
     });
 
-    function format(text){
-        return '<span class="ispravi-me-highlight">' + text + '</span>';
+    if (currIndex != text.length - 1){
+        textArray.push(text.slice(currIndex));
+    }
+
+    function format(text, index){
+        return '<span class="ispravi-me-highlight" data-index="' + index + '">' + text + '</span>';
     }
 
     $container.html(textArray.join(""));

@@ -1,21 +1,7 @@
 
 var ispraviMeDataAttribute = 'ispravi-me-id';
 
-// TODO: izbrisati kada se implementira ispravno highlightanje
-var ispraviMeFakeResponse = {
-    response: {
-        error: [
-            {
-                suspicious: "čovijek",
-                suggestions: ["čovijek"]
-            },            
-            {
-                suspicious: "diiiijete",
-                suggestions: ["dijete", "pijete"]
-            }
-        ]
-    }
-};
+var ispraviMeFakeResponse;
 
 $('body').on('click', '.ispravi-me-highlight', function(){
     var _index = $(this).data('index');
@@ -37,6 +23,7 @@ function provjeri($clickedButton){
 
     $clickedButton.LoadingOverlay("show", {imageColor: "#0061A6"});
     $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(data){   
+        ispraviMeFakeResponse = data;
         $clickedButton.LoadingOverlay("hide", {imageColor: "#0061A6"});
         if (!data.response){            
         $container.effect('highlight', {color: 'green'}, 1000);
