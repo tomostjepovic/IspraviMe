@@ -14,10 +14,11 @@
 function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	// brisanje modala ako postoji
 	var dialogContainerId = 'dialogContainerId';
-	
+
 	$('#' + dialogContainerId).remove();
 
 	let errorIndex = 0;
+	let fixedErrorIndexes = [];
 	if (defaultErrorIndex != null) {
 		errorIndex = defaultErrorIndex;
 	}
@@ -43,16 +44,17 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
 	$('body').append($selectorContainer);
 
-	var dialog = $selectorContainer.dialog({
+	$selectorContainer.dialog({
 		dialogClass: 'no-close',
 		title: 'Ispravi me',
-		position: { my: "center", at: "top"},
+		position: { my: 'center', at: 'top' },
 		buttons: [
 			{
 				text: 'Zamjeni',
 				click: function() {
 					let selectedValue = $('.data-ispraviMe-selectorList .ui-selected').html();
 					if (selectedValue) {
+						fixedErrorIndexes.push(errorIndex);
 						valueSelectedCallback(selectedValue, errorIndex);
 					}
 
