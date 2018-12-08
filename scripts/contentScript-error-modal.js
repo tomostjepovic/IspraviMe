@@ -20,15 +20,20 @@
 	);
 }
 
-function GetNextIndexByIncrement(fixedErrorIndexes, currentIndex, increment) {
-	var newIndex = currentIndex;
+function GetNextErrorByIncrement(currentError, errors, increment) {
+	var currentIndex = 0;
 	while (true) {
-		newIndex = newIndex + increment;
-		if ($.inArray(newIndex, fixedErrorIndexes) === -1) {
+		if (currentError.index == errors[currentIndex].index) {
 			break;
 		}
+		currentIndex++;
 	}
-	return newIndex;
+	let nextIndex = currentIndex + increment;
+	if (nextIndex >= 0 && nextIndex < errors.length) {
+		return errors[nextIndex];
+	} else {
+		return null;
+	}
 }
 
 function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
@@ -37,18 +42,15 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 
 	$('#' + dialogContainerId).remove();
 
-	let errorIndex = 0;
-	let fixedErrorIndexes = [];
-	if (defaultErrorIndex != null) {
-		errorIndex = defaultErrorIndex;
-	}
+	let error = $.grep(errors, function(i) {
+		return i.index === defaultErrorIndex;
+	})[0];
 	let $selectorContainer = $('<div>', { id: 'dialogContainerId', class: 'data-ispraviMe-suspiciousContainer' });
 	let $previousErrorButton = $('<input>', { type: 'button', value: '<' });
 	$previousErrorButton.click(function() {
-		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, -1);
-		if (nextIndex >= 0) {
-			errorIndex = nextIndex;
-			ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
+		var nextError = GetNextErrorByIncrement(error, errors, -1);
+		if (nextError != null) {
+			ShowError(nextError, $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($previousErrorButton);
@@ -56,14 +58,13 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 	$selectorContainer.append($suspiciousItem);
 	let $nextErrorButton = $('<input>', { type: 'button', value: '>' });
 	$nextErrorButton.click(function() {
-		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, 1);
-		if (nextIndex < errors.length) {
-			errorIndex = nextIndex;
-			ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
+		var nextError = GetNextErrorByIncrement(error, errors, 1);
+		if (nextError != null) {
+			ShowError(nextError, $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($nextErrorButton);
-	ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
+	ShowError(error, $selectorContainer, $suspiciousItem);
 	$selectorContainer.append($('<input>', { type: 'text', class: 'ispraviMe-errorValue' }));
 	$('body').append($selectorContainer);
 
@@ -77,15 +78,19 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 				click: function() {
 					let selectedValue = $('input[type="text"].ispraviMe-errorValue').val();
 					if (selectedValue) {
-						fixedErrorIndexes.push(errorIndex);
-						valueSelectedCallback(selectedValue, errorIndex);
+						valueSelectedCallback(selectedValue, error.index);
 					}
 
-					errorIndex++;
-					if (errorIndex < errors.length) {
-						ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
+					let nextError = GetNextErrorByIncrement(error, errors, 1);
+					if (nextError != null) {
+						ShowError(nextError, $selectorContainer, $suspiciousItem);
 					} else {
-						$(this).dialog('close');
+						nextError = GetNextErrorByIncrement(error, errors, -1);
+						if (nextError != null) {
+							ShowError(nextError, $selectorContainer, $suspiciousItem);
+						} else {
+							$(this).dialog('close');
+						}
 					}
 				}
 			}
