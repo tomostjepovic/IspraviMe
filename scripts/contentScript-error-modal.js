@@ -11,22 +11,35 @@
 	$selectorContainer.append($list.selectable());
 }
 
-function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
+function GetNextIndexByIncrement(fixedErrorIndexes, currentIndex, increment) {
+	var newIndex = currentIndex;
+	while (true) {
+		newIndex = newIndex + increment;
+		if ($.inArray(newIndex, fixedErrorIndexes) === -1) {
+			break;
+		}
+	}
+	return newIndex;
+}
+
+function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 	// brisanje modala ako postoji
 	var dialogContainerId = 'dialogContainerId';
-	
+
 	$('#' + dialogContainerId).remove();
 
 	let errorIndex = 0;
+	let fixedErrorIndexes = [];
 	if (defaultErrorIndex != null) {
 		errorIndex = defaultErrorIndex;
 	}
 	let $selectorContainer = $('<div>', { id: 'dialogContainerId', class: 'data-ispraviMe-suspiciousContainer' });
 	let $previousErrorButton = $('<input>', { type: 'button', value: '<' });
 	$previousErrorButton.click(function() {
-		if (errorIndex > 0) {
-			errorIndex--;
-			ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, -1);
+		if (nextIndex >= 0) {
+			errorIndex = nextIndex;
+			ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($previousErrorButton);
@@ -34,31 +47,33 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	$selectorContainer.append($suspiciousItem);
 	let $nextErrorButton = $('<input>', { type: 'button', value: '>' });
 	$nextErrorButton.click(function() {
-		if (errorIndex + 1 < res.response.errors) {
-			errorIndex++;
-			ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, 1);
+		if (nextIndex < errors.length) {
+			errorIndex = nextIndex;
+			ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($nextErrorButton);
-	ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+	ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 	$('body').append($selectorContainer);
 
-	var dialog = $selectorContainer.dialog({
+	$selectorContainer.dialog({
 		dialogClass: 'no-close',
 		title: 'Ispravi me',
-		position: { my: "center", at: "top"},
+		position: { my: 'center', at: 'top' },
 		buttons: [
 			{
 				text: 'Zamjeni',
 				click: function() {
 					let selectedValue = $('.data-ispraviMe-selectorList .ui-selected').html();
 					if (selectedValue) {
+						fixedErrorIndexes.push(errorIndex);
 						valueSelectedCallback(selectedValue, errorIndex);
 					}
 
 					errorIndex++;
-					if (errorIndex < res.response.errors) {
-						ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+					if (errorIndex < errors.length) {
+						ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 					} else {
 						$(this).dialog('close');
 					}
