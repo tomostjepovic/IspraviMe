@@ -10,7 +10,7 @@
 	$.each(error.suggestions, function(i, e) {
 		$list.append($('<li>', { class: 'ui-widget-content' }).append(e));
 	});
-	$selectorContainer.append(
+	$selectorContainer.find('div.ispraviMe-errorListWraper').append(
 		$list.selectable({
 			selected: function(event, ui) {
 				var selectedValue = $list.find('.ui-selected').html();
@@ -66,8 +66,10 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 		}
 	});
 	$selectorContainer.append($nextErrorButton);
-	ShowError(error, $selectorContainer, $suspiciousItem);
+	$selectorContainer.append($('<div>', { class: 'ispraviMe-errorListWraper' }));
 	$selectorContainer.append($('<input>', { type: 'text', class: 'ispraviMe-errorValue' }));
+	ShowError(error, $selectorContainer, $suspiciousItem);
+
 	$('body').append($selectorContainer);
 
 	$selectorContainer.dialog({
