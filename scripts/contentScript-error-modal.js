@@ -22,7 +22,7 @@ function GetNextIndexByIncrement(fixedErrorIndexes, currentIndex, increment) {
 	return newIndex;
 }
 
-function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
+function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 	// brisanje modala ako postoji
 	var dialogContainerId = 'dialogContainerId';
 
@@ -39,8 +39,7 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, -1);
 		if (nextIndex >= 0) {
 			errorIndex = nextIndex;
-			console.log('Previous index: ' + errorIndex);
-			ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+			ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($previousErrorButton);
@@ -49,14 +48,13 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	let $nextErrorButton = $('<input>', { type: 'button', value: '>' });
 	$nextErrorButton.click(function() {
 		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, 1);
-		if (nextIndex < res.response.errors) {
+		if (nextIndex < errors.length) {
 			errorIndex = nextIndex;
-			console.log('Next index: ' + errorIndex);
-			ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+			ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 		}
 	});
 	$selectorContainer.append($nextErrorButton);
-	ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+	ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 	$('body').append($selectorContainer);
 
 	$selectorContainer.dialog({
@@ -74,8 +72,8 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 					}
 
 					errorIndex++;
-					if (errorIndex < res.response.errors) {
-						ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
+					if (errorIndex < errors.length) {
+						ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
 					} else {
 						$(this).dialog('close');
 					}
