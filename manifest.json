@@ -3,10 +3,7 @@
     "version": "1.0",
     "description": "Ispravi me!",
     "permissions": ["storage", "activeTab", "http://*/"],
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-      },
+    "background": { },
     "content_scripts": [
         {
             "matches": ["file://*"],
