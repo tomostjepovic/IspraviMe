@@ -1,0 +1,19 @@
+﻿.data-ispraviMe-selectorList .ui-selecting {
+	background: #feca40;
+}
+.data-ispraviMe-selectorList .ui-selected {
+	background: #f39814;
+	color: white;
+}
+.data-ispraviMe-selectorList {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: 60%;
+}
+.data-ispraviMe-selectorList li {
+	margin: 3px;
+	padding: 0.4em;
+	font-size: 1.4em;
+	height: 18px;
+}

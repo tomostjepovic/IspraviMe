@@ -1,23 +1,23 @@
-{
-    "name": "Ispravi.me",
-    "version": "1.0",
-    "description": "Ispravi me!",
-    "permissions": ["storage", "activeTab", "http://*/"],
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-      },
-    "content_scripts": [
-        {
-            "matches": ["file://*"],
-            "js": ["jQuery/jquery-3.3.1.min.js","contentScript.js", "jquery-ui.js"],
-            "css": [ "jquery-ui.css"],
-            "run_at": "document_end"
-        }
-    ],
-    "manifest_version": 2,
-    "browser_action": {
-        "default_icon": "icon.png", 
-        "default_popup": "popup.html"
-      }
-  }
+﻿{
+	"name": "Ispravi.me",
+	"version": "1.0",
+	"description": "Ispravi me!",
+	"permissions": ["storage", "activeTab", "http://*/"],
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	},
+	"content_scripts": [
+		{
+			"matches": ["file://*"],
+			"js": ["jQuery/jquery-3.3.1.min.js", "jquery-ui.js", "contentScript-error-modal.js", "contentScript.js"],
+			"css": ["jquery-ui.css", "main.css"],
+			"run_at": "document_end"
+		}
+	],
+	"manifest_version": 2,
+	"browser_action": {
+		"default_icon": "icon.png",
+		"default_popup": "popup.html"
+	}
+}
