@@ -17,7 +17,7 @@ var ispraviMeFakeResponse = {
     }
 };
 
-$('.ispravi-me-highlight').on('click', function(){
+$('body').on('click', '.ispravi-me-highlight', function(){
     var _index = $(this).data('index');
     ShowErrorModal(ispraviMeFakeResponse, function(selectedValue, index){
         $("[data-index='" + index + "']").text(selectedValue);
@@ -35,9 +35,9 @@ function provjeri($clickedButton){
         return;
     }
 
-    $.LoadingOverlay("show", {imageColor: "#0061A6"});
+    $clickedButton.LoadingOverlay("show", {imageColor: "#0061A6"});
     $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(data){   
-        $.LoadingOverlay("hide");
+        $clickedButton.LoadingOverlay("hide", {imageColor: "#0061A6"});
         if (!data.response){            
         $container.effect('highlight', {color: 'green'}, 1000);
         } else{
