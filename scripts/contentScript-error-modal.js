@@ -11,6 +11,17 @@
 	$selectorContainer.append($list.selectable());
 }
 
+function GetNextIndexByIncrement(fixedErrorIndexes, currentIndex, increment) {
+	var newIndex = currentIndex;
+	while (true) {
+		newIndex = newIndex + increment;
+		if ($.inArray(newIndex, fixedErrorIndexes) === -1) {
+			break;
+		}
+	}
+	return newIndex;
+}
+
 function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	// brisanje modala ako postoji
 	var dialogContainerId = 'dialogContainerId';
@@ -25,8 +36,10 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	let $selectorContainer = $('<div>', { id: 'dialogContainerId', class: 'data-ispraviMe-suspiciousContainer' });
 	let $previousErrorButton = $('<input>', { type: 'button', value: '<' });
 	$previousErrorButton.click(function() {
-		if (errorIndex > 0) {
-			errorIndex--;
+		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, -1);
+		if (nextIndex >= 0) {
+			errorIndex = nextIndex;
+			console.log('Previous index: ' + errorIndex);
 			ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
 		}
 	});
@@ -35,8 +48,10 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	$selectorContainer.append($suspiciousItem);
 	let $nextErrorButton = $('<input>', { type: 'button', value: '>' });
 	$nextErrorButton.click(function() {
-		if (errorIndex + 1 < res.response.errors) {
-			errorIndex++;
+		var nextIndex = GetNextIndexByIncrement(fixedErrorIndexes, errorIndex, 1);
+		if (nextIndex < res.response.errors) {
+			errorIndex = nextIndex;
+			console.log('Next index: ' + errorIndex);
 			ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
 		}
 	});
