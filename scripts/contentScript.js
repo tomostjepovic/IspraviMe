@@ -3,7 +3,6 @@ var ispraviMeDataAttribute = 'ispravi-me-id';
 var ispraviMeResponses = [];
 
 $('body').on('click', '.ispravi-me-highlight', function(){
-    debugger;
     var _index = $(this).data('index');
     var _ispraviMeId = $(this).data('ispravi-me-id');
     var errors = $.grep(ispraviMeResponses, function(item){ 
@@ -13,9 +12,13 @@ $('body').on('click', '.ispravi-me-highlight', function(){
         $("[data-index='" + index + "']").text(selectedValue);
         $("[data-index='" + index + "']").removeClass("ispravi-me-highlight");
 
-        errors = $.grep(errors[_ispraviMeId], function(item){ 
-            return item.index != index; 
-       });
+        $.grep(ispraviMeResponses, function(item){ 
+            if (item.id == _ispraviMeId){
+                item.errors = $.grep(item.errors, function(error){ 
+                    return error.index != index; 
+                });
+            } 
+        });
     }, _index);
 });
 
@@ -41,7 +44,16 @@ function provjeri($clickedButton) {
         
             _errors.sort(function(a, b){return a.position - b.position});
 
-            ispraviMeResponses.push({id: ispraviMeId, errors: _errors});
+            var existingResponse = $.grep(ispraviMeResponses, function(item){ 
+                return item.id == ispraviMeId; 
+            });
+
+            if (existingResponse.length > 0) {
+                existingResponse[0].errors = _errors
+            } else {
+                ispraviMeResponses.push({id: ispraviMeId, errors: _errors});
+            }
+
             
             Highlight($container, _errors, ispraviMeId);
         }
