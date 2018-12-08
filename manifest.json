@@ -7,7 +7,13 @@
 	"content_scripts": [
 		{
 			"matches": ["file://*"],
-			"js": ["jQuery/jquery-3.3.1.min.js", "jQuery/jquery-ui.js", "scripts/contentScript-error-modal.js", "scripts/contentScript.js"],
+			"js": [
+				"jQuery/jquery-3.3.1.min.js", 
+				"jQuery/jquery-ui.js", 
+				"scripts/contentScript-error-modal.js", 
+				"scripts/contentScript.js",
+				"scripts/contentScript-highlighter.js"
+			],
 			"css": ["jQuery/jquery-ui.css", "css/main.css"],
 			"run_at": "document_end"
 		}

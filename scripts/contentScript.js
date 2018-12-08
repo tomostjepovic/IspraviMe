@@ -2,22 +2,23 @@
 var ispraviMeDataAttribute = 'ispravi-me-id';
 
 function provjeri($clickedButton){
-    var text = getContainerText($clickedButton);
+    var ispraviMeId = $clickedButton.data(ispraviMeDataAttribute);
+    var $container = $($('body').find("[data-container-" + ispraviMeDataAttribute + "='" + ispraviMeId + "']")[0]);
+    var text = $container.text();
 
     if (!text){
         alert("Potrebno je upisati barem jednu riječ.");
+
+        return;
     }
 
     $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(response){
-        console.log(response);
+        Highlight($container, response);
     });
 }
 
 var getContainerText = function($button){
-    var ispraviMeId = $button.data(ispraviMeDataAttribute);
-    var text = $($('body').find("[data-container-" + ispraviMeDataAttribute + "='" + ispraviMeId + "']")[0]).text();
-
-    return text;
+    
 }
 
 var createButton = function(ispraviMeId) {
