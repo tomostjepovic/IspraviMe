@@ -12,7 +12,8 @@
 				"jQuery/jquery-ui.js", 
 				"scripts/contentScript-error-modal.js", 
 				"scripts/contentScript.js",
-				"scripts/contentScript-highlighter.js"
+				"scripts/contentScript-highlighter.js",
+				"scripts/loadingoverlay.min.js"
 			],
 			"css": ["jQuery/jquery-ui.css", "css/main.css"],
 			"run_at": "document_end"
