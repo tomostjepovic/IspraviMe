@@ -20,18 +20,19 @@
 	cursor: pointer;
 }
 
-.ispravi-me-highlight{
+.ispravi-me-highlight {
 	background-color: rgb(241, 125, 125);
 	cursor: pointer;
 }
 
-.ispravi-me-button{
+.ispravi-me-button {
 	margin-bottom: 5px;
 }
-#dialogContainerId{
+#dialogContainerId {
 	text-align: center;
 }
 
-.data-ispraviMe-suspiciousItem{
+span.data-ispraviMe-suspiciousItem {
 	padding: 0 8px;
+	font-weight: bold;
 }

@@ -1,14 +1,23 @@
 ﻿function ShowError(error, $selectorContainer, $suspiciousItem) {
 	//clear data
-	$suspiciousItem.text(error.suspicious);
+	$suspiciousItem.text('  ' + error.suspicious + '  ');
+	$selectorContainer.find('input[type=text]').val('');
 	let oldList = $selectorContainer.find('ol.data-ispraviMe-selectorList');
 	oldList.selectable('destroy');
 	oldList.remove();
+	//setup new inputs
 	let $list = $('<ol>', { class: 'data-ispraviMe-selectorList' });
 	$.each(error.suggestions, function(i, e) {
 		$list.append($('<li>', { class: 'ui-widget-content' }).append(e));
 	});
-	$selectorContainer.append($list.selectable());
+	$selectorContainer.append(
+		$list.selectable({
+			selected: function(event, ui) {
+				var selectedValue = $list.find('.ui-selected').html();
+				$selectorContainer.find('input[type=text]').val(selectedValue);
+			}
+		})
+	);
 }
 
 function GetNextIndexByIncrement(fixedErrorIndexes, currentIndex, increment) {
@@ -43,7 +52,7 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 		}
 	});
 	$selectorContainer.append($previousErrorButton);
-	let $suspiciousItem = $('<strong>', { class: 'data-ispraviMe-suspiciousItem' });
+	let $suspiciousItem = $('<span>', { class: 'data-ispraviMe-suspiciousItem' });
 	$selectorContainer.append($suspiciousItem);
 	let $nextErrorButton = $('<input>', { type: 'button', value: '>' });
 	$nextErrorButton.click(function() {
@@ -55,6 +64,7 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 	});
 	$selectorContainer.append($nextErrorButton);
 	ShowError(errors[errorIndex], $selectorContainer, $suspiciousItem);
+	$selectorContainer.append($('<input>', { type: 'text', class: 'ispraviMe-errorValue' }));
 	$('body').append($selectorContainer);
 
 	$selectorContainer.dialog({
@@ -65,7 +75,7 @@ function ShowErrorModal(errors, valueSelectedCallback, defaultErrorIndex) {
 			{
 				text: 'Zamjeni',
 				click: function() {
-					let selectedValue = $('.data-ispraviMe-selectorList .ui-selected').html();
+					let selectedValue = $('input[type="text"].ispraviMe-errorValue').val();
 					if (selectedValue) {
 						fixedErrorIndexes.push(errorIndex);
 						valueSelectedCallback(selectedValue, errorIndex);
