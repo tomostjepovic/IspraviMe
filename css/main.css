@@ -2,18 +2,35 @@
 	background: #feca40;
 }
 .data-ispraviMe-selectorList .ui-selected {
-	background: #f39814;
+	background: #0061a6;
 	color: white;
 }
 .data-ispraviMe-selectorList {
 	list-style-type: none;
 	margin: 0;
+	margin-top: 10px;
 	padding: 0;
-	width: 60%;
 }
 .data-ispraviMe-selectorList li {
 	margin: 3px;
 	padding: 0.4em;
 	font-size: 1.4em;
 	height: 18px;
+	cursor: pointer;
+}
+
+.ispravi-me-highlight{
+	background-color: rgb(241, 125, 125);
+	cursor: pointer;
+}
+
+.ispravi-me-button{
+	margin-bottom: 5px;
+}
+#dialogContainerId{
+	text-align: center;
+}
+
+.data-ispraviMe-suspiciousItem{
+	padding: 0 8px;
 }

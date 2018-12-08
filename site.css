@@ -1,11 +1,10 @@
 .ispravi-me-container{
     overflow: auto;
-    display: inline-block;
     border-width: 0.5px;
     border-style: solid;
     border-color: #0061A6;
     width: 800px;
-    height: 400px;
+    height: 300px;
     padding: 5px;
     font-family: 'Montserrat', sans-serif;
 }

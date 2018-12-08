@@ -12,11 +12,16 @@
 }
 
 function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
+	// brisanje modala ako postoji
+	var dialogContainerId = 'dialogContainerId';
+	
+	$('#' + dialogContainerId).remove();
+
 	let errorIndex = 0;
 	if (defaultErrorIndex != null) {
 		errorIndex = defaultErrorIndex;
 	}
-	let $selectorContainer = $('<div>', { id: 'ispraviMeDialogContainer', class: 'data-ispraviMe-suspiciousContainer' });
+	let $selectorContainer = $('<div>', { id: 'dialogContainerId', class: 'data-ispraviMe-suspiciousContainer' });
 	let $previousErrorButton = $('<input>', { type: 'button', value: '<' });
 	$previousErrorButton.click(function() {
 		if (errorIndex > 0) {
@@ -38,16 +43,17 @@ function ShowErrorModal(res, valueSelectedCallback, defaultErrorIndex) {
 	ShowError(res.response.error[errorIndex], $selectorContainer, $suspiciousItem);
 	$('body').append($selectorContainer);
 
-	$selectorContainer.dialog({
+	var dialog = $selectorContainer.dialog({
 		dialogClass: 'no-close',
 		title: 'Ispravi me',
+		position: { my: "center", at: "top"},
 		buttons: [
 			{
 				text: 'Zamjeni',
 				click: function() {
 					let selectedValue = $('.data-ispraviMe-selectorList .ui-selected').html();
-					if (selectedValue != '') {
-						valueSelectedCallback(selectedValue, res.response.error[errorIndex]);
+					if (selectedValue) {
+						valueSelectedCallback(selectedValue, errorIndex);
 					}
 
 					errorIndex++;
