@@ -4,8 +4,12 @@ var ispraviMeDataAttribute = 'ispravi-me-id';
 function provjeri($clickedButton){
     var text = getContainerText($clickedButton);
 
-    $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(data){
-        console.log(data);
+    if (!text){
+        alert("Potrebno je upisati barem jednu riječ.");
+    }
+
+    $.get("http://omega.ispravi.me/api/ispravi.pl?textarea=" + text + "&context=on", function(response){
+        console.log(response);
     });
 }
 
